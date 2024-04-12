@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Account {
-    public Long id;
-    public BigDecimal money;
+    private Long id;
+    private BigDecimal money;
 
     public Account(Long id, BigDecimal money) {
         this.id = id;
