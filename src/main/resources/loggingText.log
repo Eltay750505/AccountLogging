@@ -1,0 +1,6 @@
+2024-04-12 12:02:51 INFO  Main:20 - Started transfer.
+2024-04-12 12:02:52 INFO  Main:17 - Transfer money from account with id - 3 to 18
+2024-04-12 12:02:52 INFO  Main:18 - Account 3 current amount is - 0
+2024-04-12 12:02:52 INFO  Main:19 - Account 18 current amount is - 20000
+2024-04-12 12:02:53 INFO  Main:34 - Transfer ends.
+
