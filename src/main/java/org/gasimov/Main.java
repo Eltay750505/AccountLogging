@@ -1,36 +1,35 @@
 package org.gasimov;
 
-
-import org.apache.log4j.Logger;
 import org.gasimov.model.Account;
 import org.gasimov.service.AccountService;
+import org.gasimov.thread.AccountTransferThread;
+import org.gasimov.util.RandomUtil;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static org.gasimov.util.ConstantUtil.*;
 
 
 public class Main {
 
-    private static final Logger logger = Logger.getLogger(Main.class);
     private static final AccountService accountService = new AccountService();
 
     public static void main(String[] args) {
-        logger.info("Started transfer.");
-        int accountsCount = 4;
-        BigDecimal baseMoneyValue = BigDecimal.valueOf(10000);
-        List<Account> accounts = new ArrayList<>();
-        Random random = new Random();
-        int lowerBound = 0;
-        int upperBound = 50;
+        List<Account> accounts = accountService.getRandomAccounts(accountsCount);
+        int firstAccountId = RandomUtil.getRandomNumberFromRange(minAccountSequenceValue, maxAccountSequenceValue);
+        int secondAccountId = accountService.getSecpndPairAccountId(firstAccountId, accounts.size());
+        int thirdAccountId = RandomUtil.getRandomNumberFromRange(minAccountSequenceValue, maxAccountSequenceValue);
+        int fourthAccountId = accountService.getSecpndPairAccountId(thirdAccountId, accounts.size());
 
-        for (int i = 1; i <= accountsCount; i++) {
-            Long randomId = (long) (random.nextInt(upperBound - lowerBound + 1) + lowerBound);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
 
-            accounts.add(new Account(randomId, baseMoneyValue));
+        for (int i = 0; i < 15; i++) {
+            executor.execute(new AccountTransferThread(accounts.get(firstAccountId), accounts.get(secondAccountId)));
+            executor.execute(new AccountTransferThread(accounts.get(thirdAccountId), accounts.get(fourthAccountId)));
         }
-        accountService.transferMoney(accounts.get(0), accounts.get(1), BigDecimal.valueOf(10000));
-        logger.info("Transfer ends.\n");
+
+        executor.shutdown();
     }
 }
